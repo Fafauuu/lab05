@@ -1,7 +1,6 @@
 package threads;
 
 import model.RollerSkater;
-import model.Track;
 import view.GraphicalInterface;
 import view.GraphicalInterfaceImpl;
 
@@ -19,11 +18,11 @@ public class RollerSkaterThread extends Thread{
         stopCondition = false;
         rollerSkater.putOnTrack();
 
-        while (!stopCondition){
-            gui.printTrack();
-            rollerSkater.move();
+        while (rollerSkater.getLapsLeft() > 0){
+            boolean moved = rollerSkater.move();
+            if (moved) gui.printTrack();
             try {
-                sleep(2000);
+                sleep(rollerSkater.getSpeed());
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

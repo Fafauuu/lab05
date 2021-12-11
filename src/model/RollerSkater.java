@@ -2,12 +2,14 @@ package model;
 
 public class RollerSkater {
     private String name;
+    private int speed;
     private int lapsLeft;
     private boolean onTrack;
     private int position;
 
     public RollerSkater(String name) {
         this.name = name;
+        this.speed = randomNumber(500,2000);
     }
 
     public String getName() {
@@ -29,7 +31,7 @@ public class RollerSkater {
     public void putOnTrack() {
         onTrack = true;
         position = 0;
-        Track.getInstance().getPositionsOccupied().set(position, name);
+        Track.getInstance().getPositionsOccupied().set(position, this);
     }
 
     public void takeOffTrack() {
@@ -41,16 +43,32 @@ public class RollerSkater {
         return position;
     }
 
-    public void move() {
+    public boolean move() {
         Track track = Track.getInstance();
         int nextPosition = position + 1;
         if (nextPosition == track.getSize()){
             nextPosition = 0;
         }
-        if (track.getPositionsOccupied().get(nextPosition) == "_"){
+        if (track.getPositionsOccupied().get(nextPosition) == null){
             track.releasePosition(position);
-            track.occupyPosition(nextPosition, name);
+            track.occupyPosition(nextPosition, this);
             position = nextPosition;
+            return true;
+        } else {
+            return false;
         }
+    }
+
+    private int randomNumber(int minimum, int maximum){
+        return (minimum + (int)(Math.random() * maximum));
+    }
+
+    public int getSpeed() {
+        return speed;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }
