@@ -15,13 +15,13 @@ public class RollerSkater {
     public void putOnTrack() {
         onTrack = true;
         position = 0;
-        Track.getInstance().getPositionsOccupied().set(position, this);
+        Track.getInstance().getTrackPositions().get(position).OccupyPosition(this);
         Bench.getInstance().removeRollerSkater(this);
     }
 
     public void takeOffTrack() {
         onTrack = false;
-        Track.getInstance().getPositionsOccupied().set(position, null);
+        Track.getInstance().getTrackPositions().get(position).ReleasePosition();
         position = -1;
         Bench.getInstance().addRollerSkater(this);
     }
@@ -30,22 +30,17 @@ public class RollerSkater {
         return position;
     }
 
-    public boolean move() {
+    public void move() {
         Track track = Track.getInstance();
         int nextPosition = position + 1;
         if (nextPosition == track.getSize()){
             nextPosition = 0;
         }
-        if (track.getPositionsOccupied().get(nextPosition) == null){
-            track.releasePosition(position);
-            track.occupyPosition(nextPosition, this);
-            position = nextPosition;
-            if (position == 0){
-                lapsLeft--;
-            }
-            return true;
-        } else {
-            return false;
+        track.occupyPosition(nextPosition, this);
+        track.releasePosition(position);
+        position = nextPosition;
+        if (position == 0){
+            lapsLeft--;
         }
     }
 

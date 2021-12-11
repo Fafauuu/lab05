@@ -14,17 +14,20 @@ public class RollerSkaterThread extends Thread{
     @Override
     public void run(){
         rollerSkater.putOnTrack();
+        trackObserver.trackChanged();
 
         while (!(rollerSkater.getLapsLeft() == 0 && rollerSkater.getPosition() == 3)){
-            boolean moved = rollerSkater.move();
-            if (moved && trackObserver != null) {
-                trackObserver.trackChanged();
-            }
             try {
                 sleep(1500 - rollerSkater.getSpeed());
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+//            boolean moved = rollerSkater.move();
+//            if (moved && trackObserver != null) {
+//                trackObserver.trackChanged();
+//            }
+            rollerSkater.move();
+            trackObserver.trackChanged();
         }
 
         rollerSkater.takeOffTrack();

@@ -16,15 +16,15 @@ public class TrainerThread extends Thread{
     @Override
     public void run(){
         while (true) {
-            int lapsTasked = randomNumber(1, 1);
+            int lapsTasked = randomNumber(2, 3);
             trainer.setLapsToTask(lapsTasked);
-            trainer.setSkaterToTask(null);
             sleepFor(2000);
             RollerSkater rollerSkater = pickSkater();
             sleepFor(2000);
             boolean taskCreated = createTask(lapsTasked, rollerSkater);
             if (taskCreated){
                 trainer.setLapsToTask(-1);
+                trainer.setSkaterToTask(null);
             }
             sleepFor(500);
         }
@@ -40,9 +40,7 @@ public class TrainerThread extends Thread{
 
     private RollerSkater pickSkater() {
         RollerSkater firstRollerSkaterOnBench;
-        if (Bench.getInstance().getRollerSkaters().size() != 0){
-            firstRollerSkaterOnBench = Bench.getInstance().getRollerSkaters().get(0);
-        } else firstRollerSkaterOnBench = null;
+        firstRollerSkaterOnBench = Bench.getInstance().getFirstSkaterOnBench();
         if (firstRollerSkaterOnBench != null) {
             trainer.setSkaterToTask(firstRollerSkaterOnBench);
             return firstRollerSkaterOnBench;

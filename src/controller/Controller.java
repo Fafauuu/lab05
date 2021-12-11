@@ -25,6 +25,7 @@ public class Controller implements TrackObserver {
         }
         List<RollerSkater> rollerSkaters = new ArrayList<>(Database.getInstance().getRollerSkaters());
         Bench.getInstance().setRollerSkaters(rollerSkaters);
+        trackChanged();
         TrainerThread trainerThread = new TrainerThread(database.getTrainer());
         trainerThread.setTrackObserver(this);
 //        trainerThread.setDaemon(true);

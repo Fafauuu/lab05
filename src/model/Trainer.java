@@ -4,7 +4,7 @@ import java.util.List;
 
 public class Trainer {
     private List<RollerSkater> rollerSkaters;
-    private int lapsToTask;
+    private int lapsToTask = -1;
     private RollerSkater skaterToTask;
 
     public Trainer(List<RollerSkater> rollerSkaters) {
