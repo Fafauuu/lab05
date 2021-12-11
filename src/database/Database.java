@@ -7,11 +7,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Database {
+    private static final Database instance = new Database();
     private List<RollerSkater> rollerSkaters;
     private Trainer trainer;
 
-    public Database() {
+    private Database() {
         rollerSkaters = new ArrayList<>();
+    }
+
+    public static Database getInstance() {
+        return instance;
     }
 
     public List<RollerSkater> getRollerSkaters() {

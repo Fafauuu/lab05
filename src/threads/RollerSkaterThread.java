@@ -1,13 +1,11 @@
 package threads;
 
 import model.RollerSkater;
-import view.GraphicalInterface;
-import view.GraphicalInterfaceImpl;
+import view.TrackObserver;
 
 public class RollerSkaterThread extends Thread{
+    private TrackObserver trackObserver;
     private RollerSkater rollerSkater;
-    private boolean stopCondition;
-    GraphicalInterface gui = new GraphicalInterfaceImpl();
 
     public RollerSkaterThread(RollerSkater rollerSkater) {
         this.rollerSkater = rollerSkater;
@@ -15,14 +13,15 @@ public class RollerSkaterThread extends Thread{
 
     @Override
     public void run(){
-        stopCondition = false;
         rollerSkater.putOnTrack();
 
-        while (rollerSkater.getLapsLeft() > 0){
+        while (!(rollerSkater.getLapsLeft() == 0 && rollerSkater.getPosition() == 3)){
             boolean moved = rollerSkater.move();
-            if (moved) gui.printTrack();
+            if (moved && trackObserver != null) {
+                trackObserver.trackChanged();
+            }
             try {
-                sleep(rollerSkater.getSpeed());
+                sleep(1500 - rollerSkater.getSpeed());
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -31,8 +30,7 @@ public class RollerSkaterThread extends Thread{
         rollerSkater.takeOffTrack();
     }
 
-    public void setStopCondition(){
-        this.stopCondition = true;
+    public void setTrackObserver(TrackObserver trackObserver) {
+        this.trackObserver = trackObserver;
     }
-
 }

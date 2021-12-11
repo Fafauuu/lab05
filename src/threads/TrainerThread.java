@@ -1,9 +1,12 @@
 package threads;
 
+import model.Bench;
 import model.RollerSkater;
 import model.Trainer;
+import view.TrackObserver;
 
 public class TrainerThread extends Thread{
+    private TrackObserver trackObserver;
     private final Trainer trainer;
 
     public TrainerThread(Trainer trainer) {
@@ -13,35 +16,56 @@ public class TrainerThread extends Thread{
     @Override
     public void run(){
         while (true) {
-            int lapsTasked = randomNumber(1, 9);
-            createTask(lapsTasked);
-            try {
-                sleep(4000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            int lapsTasked = randomNumber(1, 1);
+            trainer.setLapsToTask(lapsTasked);
+            trainer.setSkaterToTask(null);
+            sleepFor(2000);
+            RollerSkater rollerSkater = pickSkater();
+            sleepFor(2000);
+            boolean taskCreated = createTask(lapsTasked, rollerSkater);
+            if (taskCreated){
+                trainer.setLapsToTask(-1);
             }
+            sleepFor(500);
         }
     }
 
-    private void createTask(int lapsTasked) {
-        RollerSkater rollerSkater = pickSkater();
-        if (rollerSkater != null) {
-            rollerSkater.setLapsLeft(lapsTasked);
-            RollerSkaterThread rollerSkaterThread = new RollerSkaterThread(rollerSkater);
-            rollerSkaterThread.start();
+    private void sleepFor(int i) {
+        try {
+            sleep(i);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
     private RollerSkater pickSkater() {
-        for (RollerSkater rollerSkater : trainer.getRollerSkaters()) {
-            if (rollerSkater.getLapsLeft() == 0){
-                return rollerSkater;
-            }
+        RollerSkater firstRollerSkaterOnBench;
+        if (Bench.getInstance().getRollerSkaters().size() != 0){
+            firstRollerSkaterOnBench = Bench.getInstance().getRollerSkaters().get(0);
+        } else firstRollerSkaterOnBench = null;
+        if (firstRollerSkaterOnBench != null) {
+            trainer.setSkaterToTask(firstRollerSkaterOnBench);
+            return firstRollerSkaterOnBench;
         }
         return null;
     }
 
-    private int randomNumber(int minimum, int maximum){
-        return (minimum + (int)(Math.random() * maximum));
+    private boolean createTask(int lapsTasked, RollerSkater rollerSkater) {
+        if (rollerSkater != null) {
+            rollerSkater.setLapsLeft(lapsTasked);
+            RollerSkaterThread rollerSkaterThread = new RollerSkaterThread(rollerSkater);
+            rollerSkaterThread.setTrackObserver(trackObserver);
+            rollerSkaterThread.start();
+            return true;
+        }
+        else return false;
+    }
+
+    private int randomNumber(int min, int max){
+        return (min + (int)(Math.random() * ((max - min) + 1)));
+    }
+
+    public void setTrackObserver(TrackObserver trackObserver) {
+        this.trackObserver = trackObserver;
     }
 }

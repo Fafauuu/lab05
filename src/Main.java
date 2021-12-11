@@ -2,14 +2,17 @@ import controller.Controller;
 import database.Database;
 import model.RollerSkater;
 import model.Trainer;
+import view.GraphicalInterface;
+import view.GraphicalInterfaceImpl;
 
 public class Main {
 
     public static void main(String[] args) {
-        Database database = new Database();
-        initializeData(database);
+        initializeData(Database.getInstance());
 
-        Controller controller = new Controller(database);
+        GraphicalInterface graphicalInterface = new GraphicalInterfaceImpl();
+
+        Controller controller = new Controller(graphicalInterface);
         controller.simulate();
     }
 
@@ -19,14 +22,6 @@ public class Main {
         database.addRollerSkater(new RollerSkater("c"));
         database.addRollerSkater(new RollerSkater("d"));
         database.addRollerSkater(new RollerSkater("e"));
-        for (RollerSkater rollerSkater : database.getRollerSkaters()) {
-            System.out.println(rollerSkater.getName() + " speed: " + rollerSkater.getSpeed());
-        }
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         database.setTrainer(new Trainer(database.getRollerSkaters()));
     }
 }

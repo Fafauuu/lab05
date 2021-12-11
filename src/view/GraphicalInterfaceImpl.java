@@ -1,15 +1,32 @@
 package view;
 
+import database.Database;
+import model.RollerSkater;
 import model.Track;
+import model.Trainer;
 
 public class GraphicalInterfaceImpl implements GraphicalInterface{
     @Override
     public void printTrack() {
         Track track = Track.getInstance();
-        String trainer = "t?#";
+        Trainer trainer = Database.getInstance().getTrainer();
         StringBuilder sb = new StringBuilder();
         sb.append(trainer);
-        sb.append("\n");
+        if (trainer.getLapsToTask() != -1){
+            sb.append(trainer.getLapsToTask());
+        } else sb.append("?");
+        if (trainer.getSkaterToTask() != null){
+            sb.append(trainer.getSkaterToTask());
+        } else sb.append("#");
+        sb.append("\n\n");
+
+        for (RollerSkater rollerSkater : Database.getInstance().getRollerSkaters()) {
+            sb.append(rollerSkater);
+            sb.append(rollerSkater.getLapsLeft());
+            sb.append(" ");
+        }
+        sb.append("\n\n");
+
         sb.append(track.getNameOfPositionOccupier(15));
         sb.append(" ");
         for (int i = 0; i < 5; i++) {
