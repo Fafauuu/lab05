@@ -1,5 +1,6 @@
 package threads;
 
+import database.Database;
 import model.Bench;
 import model.RollerSkater;
 import model.Trainer;
@@ -15,9 +16,10 @@ public class TrainerThread extends Thread{
 
     @Override
     public void run(){
-        while (true) {
-            int lapsTasked = randomNumber(2, 3);
+        while (!stopCondition()) {
+            int lapsTasked = randomNumber(1, 9);
             trainer.setLapsToTask(lapsTasked);
+            trackObserver.trainerLabelChanged();
             sleepFor(2000);
             RollerSkater rollerSkater = pickSkater();
             sleepFor(2000);
@@ -28,6 +30,15 @@ public class TrainerThread extends Thread{
             }
             sleepFor(500);
         }
+    }
+
+    private boolean stopCondition() {
+        for (RollerSkater rollerSkater : Database.getInstance().getRollerSkaters()) {
+            if (rollerSkater.getSessionsAccomplished() < 3){
+                return false;
+            }
+        }
+        return true;
     }
 
     private void sleepFor(int i) {
@@ -43,6 +54,7 @@ public class TrainerThread extends Thread{
         firstRollerSkaterOnBench = Bench.getInstance().getFirstSkaterOnBench();
         if (firstRollerSkaterOnBench != null) {
             trainer.setSkaterToTask(firstRollerSkaterOnBench);
+            trackObserver.trainerLabelChanged();
             return firstRollerSkaterOnBench;
         }
         return null;
@@ -51,6 +63,7 @@ public class TrainerThread extends Thread{
     private boolean createTask(int lapsTasked, RollerSkater rollerSkater) {
         if (rollerSkater != null) {
             rollerSkater.setLapsLeft(lapsTasked);
+            Bench.getInstance().removeRollerSkater(rollerSkater);
             RollerSkaterThread rollerSkaterThread = new RollerSkaterThread(rollerSkater);
             rollerSkaterThread.setTrackObserver(trackObserver);
             rollerSkaterThread.start();

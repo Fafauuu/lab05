@@ -1,5 +1,7 @@
 package view;
 
 public interface GraphicalInterface {
-    void printTrack();
+    void updateTrack();
+    void updateGates();
+    void updateTrainer();
 }

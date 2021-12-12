@@ -6,8 +6,7 @@ public class Bench {
     private static final Bench instance = new Bench();
     private List<RollerSkater> rollerSkaters;
 
-    private Bench() {
-    }
+    private Bench() {}
 
     public static Bench getInstance() {
         return instance;
@@ -16,7 +15,6 @@ public class Bench {
     public synchronized void addRollerSkater(RollerSkater rollerSkater) {
         rollerSkaters.add(rollerSkater);
         notifyAll();
-        System.out.println("notifying trainer");
     }
 
     public void removeRollerSkater(RollerSkater rollerSkater) {
@@ -26,13 +24,11 @@ public class Bench {
     public synchronized RollerSkater getFirstSkaterOnBench() {
         while (rollerSkaters.size() == 0){
             try {
-                System.out.println("no one left on bench");
                 wait();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-        System.out.println("someone is on bench");
         return rollerSkaters.get(0);
     }
 

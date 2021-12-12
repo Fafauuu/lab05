@@ -7,13 +7,17 @@ public class Track {
     private static final Track instance = new Track();
     private final int size;
     private final List<TrackPosition> positions;
+    private final Gate entranceGate;
+    private final Gate exitGate;
 
     private Track() {
         this.size = 16;
-        positions = initialTrack();
+        positions = initializeTrack();
+        entranceGate = new Gate();
+        exitGate = new Gate();
     }
 
-    private List<TrackPosition> initialTrack() {
+    private List<TrackPosition> initializeTrack() {
         List<TrackPosition> positionsOccupiedList = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
             positionsOccupiedList.add(new TrackPosition());
@@ -29,21 +33,21 @@ public class Track {
         return size;
     }
 
-    public List<TrackPosition> getTrackPositions() {
+    public synchronized List<TrackPosition> getTrackPositions() {
         return positions;
+    }
+
+    public Gate getEntranceGate() {
+        return entranceGate;
+    }
+
+    public Gate getExitGate() {
+        return exitGate;
     }
 
     public String getNameOfPositionOccupier(int position){
         return positions.get(position).getPositionOccupier() == null
                 ? "_"
                 : positions.get(position).getPositionOccupier().toString();
-    }
-
-    public void releasePosition(int position){
-        positions.get(position).ReleasePosition();
-    }
-
-    public void occupyPosition(int position, RollerSkater rollerSkater){
-        positions.get(position).OccupyPosition(rollerSkater);
     }
 }

@@ -1,29 +1,29 @@
 package model;
 
+import exceptions.InvalidNameException;
+
 public class RollerSkater {
-    private String name;
-    private int speed;
-    private boolean onTrack;
+    private final String name;
+    private final int speed;
     private int lapsLeft;
     private int position;
+    private int sessionsAccomplished;
 
     public RollerSkater(String name) {
+        if (name.length() > 1) throw new InvalidNameException("Roller skater name: " + name + " is too long");
         this.name = name;
         this.speed = randomNumber(0,1000);
     }
 
     public void putOnTrack() {
-        onTrack = true;
         position = 0;
         Track.getInstance().getTrackPositions().get(position).OccupyPosition(this);
-        Bench.getInstance().removeRollerSkater(this);
     }
 
     public void takeOffTrack() {
-        onTrack = false;
         Track.getInstance().getTrackPositions().get(position).ReleasePosition();
+        sessionsAccomplished++;
         position = -1;
-        Bench.getInstance().addRollerSkater(this);
     }
 
     public int getPosition() {
@@ -36,8 +36,8 @@ public class RollerSkater {
         if (nextPosition == track.getSize()){
             nextPosition = 0;
         }
-        track.occupyPosition(nextPosition, this);
-        track.releasePosition(position);
+        track.getTrackPositions().get(nextPosition).OccupyPosition(this);
+        track.getTrackPositions().get(position).ReleasePosition();
         position = nextPosition;
         if (position == 0){
             lapsLeft--;
@@ -56,16 +56,16 @@ public class RollerSkater {
         return speed;
     }
 
-    public boolean isOnTrack() {
-        return onTrack;
-    }
-
     public int getLapsLeft() {
         return lapsLeft;
     }
 
     public void setLapsLeft(int lapsLeft) {
         this.lapsLeft = lapsLeft;
+    }
+
+    public int getSessionsAccomplished() {
+        return sessionsAccomplished;
     }
 
     @Override

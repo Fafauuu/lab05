@@ -26,14 +26,29 @@ public class Controller implements TrackObserver {
         List<RollerSkater> rollerSkaters = new ArrayList<>(Database.getInstance().getRollerSkaters());
         Bench.getInstance().setRollerSkaters(rollerSkaters);
         trackChanged();
+        createTrainerThread();
+    }
+
+    private void createTrainerThread() {
         TrainerThread trainerThread = new TrainerThread(database.getTrainer());
         trainerThread.setTrackObserver(this);
-//        trainerThread.setDaemon(true);
         trainerThread.start();
     }
 
     @Override
     public void trackChanged() {
-        graphicalInterface.printTrack();
+        try {
+            graphicalInterface.updateTrack();
+        } catch (NullPointerException e){}
+    }
+
+    @Override
+    public void gatesChanged() {
+        graphicalInterface.updateGates();
+    }
+
+    @Override
+    public void trainerLabelChanged() {
+        graphicalInterface.updateTrainer();
     }
 }

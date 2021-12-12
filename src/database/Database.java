@@ -8,7 +8,7 @@ import java.util.List;
 
 public class Database {
     private static final Database instance = new Database();
-    private List<RollerSkater> rollerSkaters;
+    private final List<RollerSkater> rollerSkaters;
     private Trainer trainer;
 
     private Database() {

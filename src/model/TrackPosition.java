@@ -10,7 +10,6 @@ public class TrackPosition {
     public synchronized void OccupyPosition(RollerSkater rollerSkater) {
         while (positionOccupier != null) {
             try {
-                System.out.println("waiting for move");
                 wait();
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -24,7 +23,7 @@ public class TrackPosition {
         notifyAll();
     }
 
-    public RollerSkater getPositionOccupier() {
+    public synchronized RollerSkater getPositionOccupier() {
         return positionOccupier;
     }
 }

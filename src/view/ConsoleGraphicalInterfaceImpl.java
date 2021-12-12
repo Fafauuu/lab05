@@ -5,9 +5,9 @@ import model.RollerSkater;
 import model.Track;
 import model.Trainer;
 
-public class GraphicalInterfaceImpl implements GraphicalInterface{
+public class ConsoleGraphicalInterfaceImpl implements GraphicalInterface{
     @Override
-    public void printTrack() {
+    public void updateTrack() {
         Track track = Track.getInstance();
         Trainer trainer = Database.getInstance().getTrainer();
         StringBuilder sb = new StringBuilder();
@@ -18,14 +18,24 @@ public class GraphicalInterfaceImpl implements GraphicalInterface{
         if (trainer.getSkaterToTask() != null){
             sb.append(trainer.getSkaterToTask());
         } else sb.append("#");
-        sb.append("\n\n");
+        sb.append("\n");
 
         for (RollerSkater rollerSkater : Database.getInstance().getRollerSkaters()) {
             sb.append(rollerSkater);
             sb.append(rollerSkater.getLapsLeft());
             sb.append(" ");
         }
-        sb.append("\n\n");
+        sb.append("\n");
+
+        sb.append(" v");
+        if (Track.getInstance().getEntranceGate().getGateOccupier() == null){
+            sb.append("_");
+        } else sb.append(Track.getInstance().getEntranceGate().getGateOccupier());
+        sb.append("    ^");
+        if (Track.getInstance().getExitGate().getGateOccupier() == null){
+            sb.append("_");
+        } else sb.append(Track.getInstance().getExitGate().getGateOccupier());
+        sb.append("\n");
 
         sb.append(track.getNameOfPositionOccupier(15));
         sb.append(" ");
@@ -73,5 +83,15 @@ public class GraphicalInterfaceImpl implements GraphicalInterface{
         }
         sb.append("\n\n");
         System.out.println(sb);
+    }
+
+    @Override
+    public void updateGates() {
+        updateTrack();
+    }
+
+    @Override
+    public void updateTrainer() {
+        updateTrack();
     }
 }
